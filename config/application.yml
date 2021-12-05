@@ -1,0 +1,30 @@
+debug: true
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          key-uri: ${KEI_URI}
+          issuer-uri: ${ISSUER_URI}
+
+rest:
+  api:
+    file:
+      transfer:
+        random-name-length: 36
+        aws:
+          s3:
+            region: ${REGION}
+            bucket: ${BUCKET}
+          rds:
+            url: ${URL_DB}
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            username: ${USERNAME_DB}
+            password: ${PWD_DB}
+
+server:
+  port: 8081
