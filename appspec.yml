@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: target/*
+    destination: /app/
+  - source: config/*
+    destination: /config/
+hooks:
+  ApplicationStart:
+    - location: scripts/start-app.sh
+      timeout: 3600
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop-app.sh
+      timeout: 3600
+      runas: root
