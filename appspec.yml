@@ -1,9 +1,11 @@
 version: 0.0
 os: linux
 files:
-  - source: target/*
-    destination: /app/
-  - source: config/*
+  - source: target/rest-api-file-transfer-0.0.1-SNAPSHOT.jar
+    destination: /app/lib/
+  - source: config/application.yml
+    destination: /config/
+  - source: config/logback.xml
     destination: /config/
 hooks:
   ApplicationStart:
