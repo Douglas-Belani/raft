@@ -1,5 +1,8 @@
 package com.example.restapifiletransfer.config;
 
+import com.example.restapifiletransfer.controller.advice.FailedAuthenticationAdvice;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +45,8 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .oauth2ResourceServer()
-                    .jwt();
+                        .authenticationEntryPoint(failedAuthenticationAdvice(objectMapper()))
+                        .jwt();
     }
 
     @Bean
@@ -74,6 +78,19 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
         return new RandomStringGenerator.Builder()
                 .withinRange('0', 'z')
                 .build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        return objectMapper;
+    }
+
+    @Bean
+    public FailedAuthenticationAdvice failedAuthenticationAdvice(ObjectMapper objectMapper) {
+        return new FailedAuthenticationAdvice(objectMapper);
     }
 
 

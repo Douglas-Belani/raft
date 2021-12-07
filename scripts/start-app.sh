@@ -2,6 +2,8 @@
 
 echo "Starting application"
 
+source /etc/environment
+
 cd /app
 echo "Current directory: ${PWD}"
 

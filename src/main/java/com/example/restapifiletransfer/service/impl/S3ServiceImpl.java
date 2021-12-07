@@ -86,7 +86,7 @@ public class S3ServiceImpl implements S3Service {
             return file;
 
         } catch (IOException e) {
-            throw new DownloadException(
+            throw new S3OperationException(
                     String.format("Error downloading file %s requested by user %s", filePath, username), e);
         }
     }
@@ -118,12 +118,12 @@ public class S3ServiceImpl implements S3Service {
             SdkHttpResponse sdkHttpResponse = putObjectResponse.sdkHttpResponse();
 
             if (!sdkHttpResponse.isSuccessful()) {
-                throw new UploadException(String.format("Error uploading file %s to S3. Http Response Code %s",
+                throw new S3OperationException(String.format("Error uploading file %s to S3. Http Response Code %s",
                         uploadedFile.getOriginalFilename(), putObjectResponse.sdkHttpResponse().statusCode()));
             }
 
         } catch (AwsServiceException | SdkClientException e) {
-            throw new UploadException("Error uploading file " + uploadedFile.getOriginalFilename() + " to S3", e);
+            throw new S3OperationException("Error uploading file " + uploadedFile.getOriginalFilename() + " to S3", e);
         }
     }
 
@@ -144,11 +144,11 @@ public class S3ServiceImpl implements S3Service {
             SdkHttpResponse sdkHttpResponse = putObjectResponse.sdkHttpResponse();
 
             if (!sdkHttpResponse.isSuccessful()) {
-                throw new FolderCreationException(String.format("Error creating folder %s in S3. Http Response Code %s",
+                throw new S3OperationException(String.format("Error creating folder %s in S3. Http Response Code %s",
                         folder, sdkHttpResponse.statusCode()));
             }
         } catch (AwsServiceException | SdkClientException e) {
-            throw new FolderCreationException(String.format("Error creating folder %s in S3", folder), e);
+            throw new S3OperationException(String.format("Error creating folder %s in S3", folder), e);
         }
     }
 
@@ -201,7 +201,8 @@ public class S3ServiceImpl implements S3Service {
             return fileMetadataList;
 
         } catch (AwsServiceException | SdkClientException e) {
-            throw new RuntimeException();
+            throw new S3OperationException(
+                    String.format("Error listing objects in path %s for user %s", filePath, username, e));
         }
     }
 
@@ -221,7 +222,7 @@ public class S3ServiceImpl implements S3Service {
         DeleteObjectResponse response = s3Client.deleteObject(deleteObjectRequest);
 
         if (!response.sdkHttpResponse().isSuccessful()) {
-            throw new FileDeletionException(String.format("Error deleting file %s requested by user %s", filePath, username));
+            throw new S3OperationException(String.format("Error deleting file %s requested by user %s", filePath, username));
         }
     }
 }
